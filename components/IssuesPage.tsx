@@ -7,6 +7,7 @@ import { Issue } from '@/lib/parseIssues'
 import AddIssue from './AddIssue'
 import Search from './Search'
 import StatusFilter from './StatusFilter'
+import SortToggle from './SortToggle'
 
 export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) {
    const [issues, setIssues] = useState<Issue[] | null>(null)
@@ -49,11 +50,14 @@ export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) 
 
    return (
       <>
-         <header className='flex mb-4 lg:mb-8 justify-between items-center'>
+         <header className='flex mb-6 lg:mb-12 justify-between items-center'>
             <h1 className='text-xl tracking-widest text-primary-dark'>Issues</h1>
-            <Search issues={issues} onResults={setFilteredIssues} />
-            <StatusFilter issues={issues} onResults={setFilteredIssues} />
-            <AddIssue lastId={lastId} />
+            <div className='flex items-center gap-4'>
+               <Search issues={issues} onResults={setFilteredIssues} />
+               <StatusFilter issues={issues} onResults={setFilteredIssues} />
+               <SortToggle issues={issues} onResults={setFilteredIssues} />
+               <AddIssue lastId={lastId} />
+            </div>
          </header>
          {filteredIssues &&
             filteredIssues.map((issue) => (
