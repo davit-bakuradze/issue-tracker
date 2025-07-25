@@ -1,13 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
-import formatRelativeTime from '@/lib/formatRelativeTime'
-import formatStatusText from '@/lib/formatStatusText'
-import getStatusClassName from '@/lib/getStatusClassName'
-import { Issue } from '@/lib/parseIssues'
 import AddIssue from './AddIssue'
 import Search from './Search'
 import StatusFilter from './StatusFilter'
 import SortToggle from './SortToggle'
+import { Issue } from '@/lib/types'
+import EmptyList from './EmptyList'
+import LoadingSpinner from './LoadingSpinner'
+import IssuesList from './IssuesList'
 
 export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) {
    const [issues, setIssues] = useState<Issue[] | null>(null)
@@ -41,41 +41,21 @@ export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) 
       }
    }, [parsedIssues])
 
-   if (!issues)
-      return (
-         <div className='flex justify-center items-center h-32'>
-            <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary'></div>
-         </div>
-      )
+   if (!issues) return <LoadingSpinner />
+   if (issues.length === 0) return <EmptyList />
 
    return (
       <>
-         <header className='flex mb-6 lg:mb-12 justify-between items-center'>
+         <header className='flex flex-col md:flex-row gap-4 mb-6 lg:mb-12 justify-between items-center'>
             <h1 className='text-xl tracking-widest text-primary-dark'>Issues</h1>
-            <div className='flex items-center gap-4'>
+            <div className='flex items-center gap-4 flex-wrap'>
                <Search issues={issues} onResults={setFilteredIssues} />
                <StatusFilter issues={issues} onResults={setFilteredIssues} />
                <SortToggle issues={issues} onResults={setFilteredIssues} />
                <AddIssue lastId={lastId} />
             </div>
          </header>
-         {filteredIssues &&
-            filteredIssues.map((issue) => (
-               <main
-                  key={issue.id}
-                  className='grid grid-cols-[1fr_100px_70px] md:grid-cols-[1fr_200px_100px] gap-4 text-primary items-center justify-items-center'
-               >
-                  <h2 className='font-bold text-primary justify-self-start'>{issue.title}</h2>
-                  <p
-                     className={`${getStatusClassName(
-                        issue.status
-                     )} px-3 py-1 rounded inline-flex items-center text-white text-xs w-24 h-8 justify-center `}
-                  >
-                     {formatStatusText(issue.status)}
-                  </p>
-                  <p className='text-sm'>{issue.updatedAt ? formatRelativeTime(issue.updatedAt) : 'Unknown'}</p>
-               </main>
-            ))}
+         {filteredIssues && <IssuesList filteredIssues={filteredIssues} />}
       </>
    )
 }

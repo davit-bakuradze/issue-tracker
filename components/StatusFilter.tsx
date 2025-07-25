@@ -1,6 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Issue } from '@/lib/parseIssues'
-import { IssueStatus, IssueStatusWIthAll } from '@/lib/types'
+import { Issue, IssueStatusWIthAll } from '@/lib/types'
 import { useState } from 'react'
 
 function StatusFilter({ issues, onResults }: { issues: Issue[]; onResults: (results: Issue[]) => void }) {

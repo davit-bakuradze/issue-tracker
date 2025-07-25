@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Issue } from '@/lib/parseIssues'
+import { Issue } from '@/lib/types'
 
 function SortToggle({ issues, onResults }: { issues: Issue[]; onResults: (results: Issue[]) => void }) {
    function handleStatusChange(value: 'asc' | 'desc') {

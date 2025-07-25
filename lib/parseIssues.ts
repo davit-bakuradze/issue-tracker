@@ -1,13 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-
-export type Issue = {
-   id: number
-   title: string
-   status: string
-   updatedAt: string | null
-   description: string
-}
+import { Issue } from './types'
 
 export async function parseIssuesFile(): Promise<Issue[]> {
    const filePath = path.join(process.cwd(), 'public', 'issues.dat')

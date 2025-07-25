@@ -2,7 +2,7 @@
 
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { addIssueToLocalStorage } from '@/lib/addIssueToLocalStorage'
 import { IssueStatus } from '@/lib/types'
 
@@ -49,10 +49,26 @@ export default function AddIssue({ lastId }: { lastId: number }) {
       }
    }
 
+   useEffect(() => {
+      function handleKeyDown(e: KeyboardEvent) {
+         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+            e.preventDefault()
+            const form = document.getElementById('add-issue-form') as HTMLFormElement | null
+            if (form) {
+               form.requestSubmit()
+            }
+         }
+      }
+      window.addEventListener('keydown', handleKeyDown)
+      return () => {
+         window.removeEventListener('keydown', handleKeyDown)
+      }
+   }, [])
+
    return (
       <Dialog>
          <DialogTrigger asChild>
-            <button className='border-2 border-primary-dark rounded-md text-sm py-1 px-1.5 hover:shadow-md cursor-pointer focus:outline-primary '>
+            <button className='border-2 h-9 border-primary-dark rounded-md text-sm py-1 px-1.5 hover:shadow-md cursor-pointer focus:outline-primary '>
                Add new
             </button>
          </DialogTrigger>
@@ -61,7 +77,7 @@ export default function AddIssue({ lastId }: { lastId: number }) {
                <DialogTitle>Add a new issue</DialogTitle>
                <DialogDescription>Add a new issue here. The description field is optional. Click save when you&apos;re done.</DialogDescription>
             </DialogHeader>
-            <form className='grid gap-4' onSubmit={handleSubmit}>
+            <form id='add-issue-form' className='grid gap-4' onSubmit={handleSubmit}>
                <div className='grid gap-3'>
                   <label htmlFor='title'>Title</label>
                   <input

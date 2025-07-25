@@ -1,4 +1,4 @@
-import { Issue } from '@/lib/parseIssues'
+import { Issue } from '@/lib/types'
 import { useState } from 'react'
 
 function Search({ issues, onResults }: { issues: Issue[]; onResults: (results: Issue[]) => void }) {
@@ -18,7 +18,7 @@ function Search({ issues, onResults }: { issues: Issue[]; onResults: (results: I
             value={query}
             onChange={handleSearch}
             placeholder='Search...'
-            className=' text-primary-dark border-2 border-border-primary rounded-md text-sm py-1 px-1.5 hover:shadow-md focus:outline-primary focus:shadow-none'
+            className=' text-primary-dark border-2 h-9 border-border-primary rounded-md text-sm py-1 px-1.5 hover:shadow-md focus:outline-primary focus:shadow-none'
          />
       </div>
    )
