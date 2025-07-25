@@ -6,6 +6,7 @@ import getStatusClassName from '@/lib/getStatusClassName'
 import { Issue } from '@/lib/parseIssues'
 import AddIssue from './AddIssue'
 import Search from './Search'
+import StatusFilter from './StatusFilter'
 
 export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) {
    const [issues, setIssues] = useState<Issue[] | null>(null)
@@ -51,6 +52,7 @@ export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) 
          <header className='flex mb-4 lg:mb-8 justify-between items-center'>
             <h1 className='text-xl tracking-widest text-primary-dark'>Issues</h1>
             <Search issues={issues} onResults={setFilteredIssues} />
+            <StatusFilter issues={issues} onResults={setFilteredIssues} />
             <AddIssue lastId={lastId} />
          </header>
          {filteredIssues &&

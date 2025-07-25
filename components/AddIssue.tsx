@@ -4,11 +4,12 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useState, useRef } from 'react'
 import { addIssueToLocalStorage } from '@/lib/addIssueToLocalStorage'
+import { IssueStatus } from '@/lib/types'
 
 export default function AddIssue({ lastId }: { lastId: number }) {
    const [title, setTitle] = useState<string>('')
    const [showError, setShowError] = useState<boolean>(false)
-   const [status, setStatus] = useState<'open' | 'closed' | 'in_progress'>('open')
+   const [status, setStatus] = useState<IssueStatus>('open')
    const [description, setDescription] = useState<string>('')
    const isTitleValid = title.length >= 3
    const dialogCloseRef = useRef<HTMLButtonElement>(null)
@@ -18,7 +19,7 @@ export default function AddIssue({ lastId }: { lastId: number }) {
       setShowError(e.target.value.length > 0 && e.target.value.length < 3)
    }
 
-   function handleStatusChange(value: 'open' | 'closed' | 'in_progress') {
+   function handleStatusChange(value: IssueStatus) {
       setStatus(value)
    }
 
@@ -51,7 +52,7 @@ export default function AddIssue({ lastId }: { lastId: number }) {
    return (
       <Dialog>
          <DialogTrigger asChild>
-            <button className='border-2 border-primary-dark rounded text-sm py-1 px-1.5 hover:shadow-md cursor-pointer focus:outline-primary '>
+            <button className='border-2 border-primary-dark rounded-md text-sm py-1 px-1.5 hover:shadow-md cursor-pointer focus:outline-primary '>
                Add new
             </button>
          </DialogTrigger>
@@ -85,7 +86,7 @@ export default function AddIssue({ lastId }: { lastId: number }) {
                </div>
                <Select defaultValue={status} onValueChange={handleStatusChange}>
                   <SelectTrigger className='w-full border border-primary outline-primary'>
-                     <SelectValue placeholder='Theme' />
+                     <SelectValue placeholder='status' />
                   </SelectTrigger>
                   <SelectContent>
                      <SelectItem value='open'>Open</SelectItem>
