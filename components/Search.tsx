@@ -19,6 +19,7 @@ function Search({ issues, onResults }: { issues: Issue[]; onResults: (results: I
             onChange={handleSearch}
             placeholder='Search...'
             className=' text-primary-dark  border-2 h-9 border-border-primary rounded-md text-sm py-1 px-1.5 hover:shadow-md focus:outline-primary focus:shadow-none'
+            aria-label='Search issues by title'
          />
       </div>
    )

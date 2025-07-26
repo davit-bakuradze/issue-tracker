@@ -77,7 +77,7 @@ export function EditIssue({
                <SheetTitle className='mt-4'>Edit Issue</SheetTitle>
                <SheetDescription>Edit the selected issue. Click save changes when you&apos;re done.</SheetDescription>
             </SheetHeader>
-            <form id='edit-issue-form' onSubmit={handleSubmit}>
+            <form id='edit-issue-form' onSubmit={handleSubmit} aria-label='Edit issue form'>
                <div className='grid gap-4 p-4'>
                   <input
                      id='edit-title'
@@ -87,10 +87,16 @@ export function EditIssue({
                         setShowError(e.target.value.length > 0 && e.target.value.length < 3)
                      }}
                      className='border border-primary outline-primary p-2 text-sm rounded-lg'
+                     aria-invalid={showError}
+                     aria-describedby={showError ? 'edit-title-error' : undefined}
                   />
-                  {showError && <span className='text-red-600 text-xs mt-1'>Title must be at least 3 characters.</span>}
-                  <Select defaultValue={form.status} onValueChange={(value) => setForm((prev) => ({ ...prev, status: value }))}>
-                     <SelectTrigger className='w-full border border-primary outline-primary'>
+                  {showError && (
+                     <span id='edit-title-error' className='text-red-600 text-xs mt-1'>
+                        Title must be at least 3 characters.
+                     </span>
+                  )}
+                  <Select defaultValue={form.status} onValueChange={(value) => setForm((prev) => ({ ...prev, status: value }))} aria-label='Status'>
+                     <SelectTrigger className='w-full border border-primary outline-primary' aria-label='Select status'>
                         <SelectValue placeholder='status' />
                      </SelectTrigger>
                      <SelectContent>
@@ -112,12 +118,16 @@ export function EditIssue({
                   <button
                      type='submit'
                      disabled={!isFormChanged || showError}
-                     className='border border-primary text-primary font-bold p-2 rounded text-sm hover:bg-primary hover:text-white disabled:opacity-50 focus:outline-primary disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-primary'
+                     className='border border-primary text-primary font-bold p-2 rounded text-sm hover:bg-primary hover:text-white disabled:opacity-50 focus:outline-primary disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-primary dark:disabled:hover:bg-transparent'
+                     aria-label='Save changes to issue'
                   >
                      Save changes
                   </button>
                   <SheetClose ref={dialogCloseRef} asChild>
-                     <button className='border border-red-800 text-red-800 font-bold p-2 rounded text-sm hover:bg-red-800 hover:text-white focus:outline-red-800 cursor-pointer'>
+                     <button
+                        className='border border-red-800 text-red-800 font-bold p-2 rounded text-sm hover:bg-red-800 hover:text-white focus:outline-red-800 cursor-pointer'
+                        aria-label='Close edit issue dialog'
+                     >
                         Close
                      </button>
                   </SheetClose>

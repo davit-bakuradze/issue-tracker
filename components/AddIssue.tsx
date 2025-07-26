@@ -68,7 +68,10 @@ export default function AddIssue({ lastId }: { lastId: number }) {
    return (
       <Dialog>
          <DialogTrigger asChild>
-            <button className='border-2 h-9 border-primary-dark rounded-md text-sm py-1 px-1.5 hover:shadow-md cursor-pointer focus:outline-primary '>
+            <button
+               className='border-2 h-9 border-border-primary rounded-md text-sm py-1 px-1.5 hover:shadow-md cursor-pointer focus:outline-primary '
+               aria-label='Add new issue'
+            >
                Add new
             </button>
          </DialogTrigger>
@@ -77,7 +80,7 @@ export default function AddIssue({ lastId }: { lastId: number }) {
                <DialogTitle>Add a new issue</DialogTitle>
                <DialogDescription>Add a new issue here. The description field is optional. Click save when you&apos;re done.</DialogDescription>
             </DialogHeader>
-            <form id='add-issue-form' className='grid gap-4' onSubmit={handleSubmit}>
+            <form id='add-issue-form' className='grid gap-4' onSubmit={handleSubmit} aria-label='Add new issue form'>
                <div className='grid gap-3'>
                   <label htmlFor='title'>Title</label>
                   <input
@@ -86,8 +89,14 @@ export default function AddIssue({ lastId }: { lastId: number }) {
                      className='border border-primary outline-primary p-2 text-sm rounded-lg'
                      value={title}
                      onChange={handleTitleChange}
+                     aria-invalid={showError}
+                     aria-describedby={showError ? 'title-error' : undefined}
                   />
-                  {showError && <span className='text-red-600 text-xs mt-1'>Title must be at least 3 characters.</span>}
+                  {showError && (
+                     <span id='title-error' className='text-red-600 text-xs mt-1'>
+                        Title must be at least 3 characters.
+                     </span>
+                  )}
                </div>
                <div className='grid gap-3'>
                   <label htmlFor='description'>Description</label>
@@ -100,8 +109,8 @@ export default function AddIssue({ lastId }: { lastId: number }) {
                      onChange={handleDescriptionChange}
                   />
                </div>
-               <Select defaultValue={status} onValueChange={handleStatusChange}>
-                  <SelectTrigger className='w-full border border-primary outline-primary'>
+               <Select defaultValue={status} onValueChange={handleStatusChange} aria-label='Status'>
+                  <SelectTrigger className='w-full border border-primary outline-primary' aria-label='Select status'>
                      <SelectValue placeholder='status' />
                   </SelectTrigger>
                   <SelectContent>
@@ -115,14 +124,16 @@ export default function AddIssue({ lastId }: { lastId: number }) {
                      <button
                         ref={dialogCloseRef}
                         className='border border-red-800 text-red-800 font-bold p-2 rounded text-sm hover:bg-red-800 hover:text-white focus:outline-red-800 cursor-pointer'
+                        aria-label='Cancel add issue'
                      >
                         Cancel
                      </button>
                   </DialogClose>
                   <button
                      type='submit'
-                     className='border border-primary text-primary font-bold p-2 rounded text-sm hover:bg-primary hover:text-white disabled:opacity-50 focus:outline-primary disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-primary'
+                     className='border border-primary text-primary font-bold p-2 rounded text-sm hover:bg-primary hover:text-white disabled:opacity-50 focus:outline-primary disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-primary dark:disabled:hover:bg-transparent'
                      disabled={!isTitleValid}
+                     aria-label='Save new issue'
                   >
                      Save
                   </button>

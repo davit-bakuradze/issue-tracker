@@ -1,24 +1,19 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Issue } from '@/lib/types'
+import { sortByDate } from '@/lib/sortByDate'
 
 function SortToggle({ issues, onResults }: { issues: Issue[]; onResults: (results: Issue[]) => void }) {
-   function handleStatusChange(value: 'asc' | 'desc') {
-      const sorted = [...issues].sort((a, b) => {
-         if (a.updatedAt == null && b.updatedAt == null) return 0
-         if (a.updatedAt == null) return 1
-         if (b.updatedAt == null) return -1
-         if (value === 'asc') {
-            return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
-         } else {
-            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-         }
-      })
+   function handleStatusChange(order: 'asc' | 'desc') {
+      const sorted = sortByDate(issues, order)
       onResults(sorted)
    }
 
    return (
-      <Select onValueChange={handleStatusChange}>
-         <SelectTrigger className='w-40 outline-primary text-primary-dark border-2 border-border-primary rounded-md text-sm py-1 px-1.5 hover:shadow-md focus:visible:ring-primary focus:shadow-none focus-visible:ring-0'>
+      <Select onValueChange={handleStatusChange} aria-label='Sort issues by date'>
+         <SelectTrigger
+            className='w-40  text-primary-dark border-2 border-border-primary rounded-md text-sm py-1 px-1.5 hover:shadow-md focus:shadow-none focus-visible:border-primary focus-visible:ring-0'
+            aria-label='Select sort order'
+         >
             <SelectValue placeholder='Sort' />
          </SelectTrigger>
          <SelectContent>
