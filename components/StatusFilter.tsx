@@ -1,26 +1,17 @@
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-import { Issue, IssueStatusWIthAll } from '@/lib/types'
+import { IssueStatusWIthAll } from '@/lib/types'
 
-function StatusFilter({
-   issues,
-   onResults,
-   status,
-   setStatus,
-}: {
-   issues: Issue[]
-   onResults: (results: Issue[]) => void
-   status: IssueStatusWIthAll
-   setStatus: (status: IssueStatusWIthAll) => void
-}) {
+function StatusFilter({ status, setStatus }: { status: IssueStatusWIthAll; setStatus: (status: IssueStatusWIthAll) => void }) {
+   const router = useRouter()
+   const searchParams = useSearchParams()
+
    function handleStatusChange(value: IssueStatusWIthAll) {
       setStatus(value)
-      if (value === 'all') {
-         onResults(issues)
-         return
-      }
-      const filtered = issues.filter((issue) => issue.status.includes(value))
-      onResults(filtered)
+      const params = new URLSearchParams(Array.from(searchParams.entries()))
+      params.set('status', value)
+      router.replace(`?${params.toString()}`)
    }
 
    return (

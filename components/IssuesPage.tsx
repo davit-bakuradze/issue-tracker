@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-
+import { useSearchParams } from 'next/navigation'
 import AddIssue from './AddIssue'
 import Search from './Search'
 import StatusFilter from './StatusFilter'
@@ -12,10 +12,15 @@ import IssuesList from './IssuesList'
 import { sortByDate } from '@/lib/sortByDate'
 
 export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) {
-   const [issues, setIssues] = useState<Issue[] | null>(null)
+   const searchParams = useSearchParams()
    const [lastId, setLastId] = useState<number>(0)
    const [filteredIssues, setFilteredIssues] = useState<Issue[] | null>(null)
-   const [status, setStatus] = useState<IssueStatusWIthAll>('all')
+   const initialQuery = {
+      search: searchParams.get('q') ?? '',
+      status: searchParams.get('status') ?? 'all',
+      sort: searchParams.get('sort') ?? 'desc',
+   }
+   const [query, setQuery] = useState(initialQuery)
    const [isEditOpen, setIsEditOpen] = useState(false)
 
    useEffect(() => {
@@ -28,15 +33,16 @@ export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) 
                merged = [...localIssues, ...parsedIssues.filter((pi) => !localIssues.some((li) => li.id === pi.id))]
             } catch {}
          }
-         const sorted = sortByDate(merged, 'desc')
-         setIssues(sorted)
-         if (status === 'all') {
-            setFilteredIssues(sorted)
-         } else {
-            setFilteredIssues(sorted.filter((issue) => issue.status.includes(status)))
+         let result = sortByDate(merged, query.sort as 'asc' | 'desc')
+         if (query.status !== 'all') {
+            result = result.filter((issue) => issue.status.includes(query.status))
          }
-         if (sorted.length > 0) {
-            const maxId = Math.max(...sorted.map((issue) => issue.id))
+         if (query.search) {
+            result = result.filter((issue) => issue.title.toLowerCase().includes(query.search.toLowerCase()))
+         }
+         setFilteredIssues(result)
+         if (result.length > 0) {
+            const maxId = Math.max(...result.map((issue) => issue.id))
             setLastId(maxId)
          } else {
             setLastId(0)
@@ -48,20 +54,20 @@ export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) 
       return () => {
          window.removeEventListener('issues-updated', updateIssues)
       }
-   }, [parsedIssues, status])
+   }, [parsedIssues, query])
 
    const handleEditOpenChange = (open: boolean) => setIsEditOpen(open)
 
-   if (!issues) return <LoadingSpinner />
+   if (!filteredIssues) return <LoadingSpinner />
 
    return (
       <main>
-         <article className='flex flex-col md:flex-row gap-4 mb-6 lg:mb-12 justify-between items-center'>
+         <article className='flex flex-col md:flex-row gap-4 mb-4 lg:mb-8 justify-between items-center'>
             <h2 className='text-xl tracking-widest text-primary-dark'>Issues</h2>
             <div className='flex items-center gap-4 flex-wrap'>
-               <Search issues={issues} onResults={setFilteredIssues} />
-               <StatusFilter issues={issues} onResults={setFilteredIssues} status={status} setStatus={setStatus} />
-               <SortToggle issues={issues} onResults={setFilteredIssues} />
+               <Search value={query.search} onChange={(val) => setQuery((q) => ({ ...q, search: val }))} />
+               <StatusFilter status={query.status as IssueStatusWIthAll} setStatus={(status) => setQuery((q) => ({ ...q, status }))} />
+               <SortToggle value={query.sort as 'asc' | 'desc'} onChange={(val) => setQuery((q) => ({ ...q, sort: val }))} />
                <AddIssue lastId={lastId} />
             </div>
          </article>
@@ -71,8 +77,8 @@ export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) 
             filteredIssues && (
                <IssuesList
                   filteredIssues={filteredIssues}
-                  status={status}
-                  setStatus={setStatus}
+                  status={query.status as IssueStatusWIthAll}
+                  setStatus={(status) => setQuery((q) => ({ ...q, status }))}
                   isEditOpen={isEditOpen}
                   onEditOpenChange={handleEditOpenChange}
                />

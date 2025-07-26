@@ -1,15 +1,19 @@
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Issue } from '@/lib/types'
-import { sortByDate } from '@/lib/sortByDate'
 
-function SortToggle({ issues, onResults }: { issues: Issue[]; onResults: (results: Issue[]) => void }) {
-   function handleStatusChange(order: 'asc' | 'desc') {
-      const sorted = sortByDate(issues, order)
-      onResults(sorted)
+function SortToggle({ value, onChange }: { value: 'asc' | 'desc'; onChange: (value: 'asc' | 'desc') => void }) {
+   const router = useRouter()
+   const searchParams = useSearchParams()
+
+   function handleSortChange(order: 'asc' | 'desc') {
+      onChange(order)
+      const params = new URLSearchParams(Array.from(searchParams.entries()))
+      params.set('sort', order)
+      router.replace(`?${params.toString()}`)
    }
 
    return (
-      <Select onValueChange={handleStatusChange} aria-label='Sort issues by date'>
+      <Select value={value} onValueChange={handleSortChange} aria-label='Sort issues by date'>
          <SelectTrigger
             className='w-40  text-primary-dark border-2 border-border-primary rounded-md text-sm py-1 px-1.5 hover:shadow-md focus:shadow-none focus-visible:border-primary focus-visible:ring-0'
             aria-label='Select sort order'
@@ -23,4 +27,5 @@ function SortToggle({ issues, onResults }: { issues: Issue[]; onResults: (result
       </Select>
    )
 }
+
 export default SortToggle
