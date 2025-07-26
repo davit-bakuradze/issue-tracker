@@ -45,17 +45,17 @@ export default function IssuesPage({ parsedIssues }: { parsedIssues: Issue[] }) 
    if (issues.length === 0) return <EmptyList />
 
    return (
-      <>
-         <header className='flex flex-col md:flex-row gap-4 mb-6 lg:mb-12 justify-between items-center'>
-            <h1 className='text-xl tracking-widest text-primary-dark'>Issues</h1>
+      <main>
+         <article className='flex flex-col md:flex-row gap-4 mb-6 lg:mb-12 justify-between items-center'>
+            <h2 className='text-xl tracking-widest text-primary-dark'>Issues</h2>
             <div className='flex items-center gap-4 flex-wrap'>
                <Search issues={issues} onResults={setFilteredIssues} />
                <StatusFilter issues={issues} onResults={setFilteredIssues} />
                <SortToggle issues={issues} onResults={setFilteredIssues} />
                <AddIssue lastId={lastId} />
             </div>
-         </header>
+         </article>
          {filteredIssues && <IssuesList filteredIssues={filteredIssues} />}
-      </>
+      </main>
    )
 }
